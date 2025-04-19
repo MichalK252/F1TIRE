@@ -127,7 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="F1TIRE.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="RaceMenu.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RaceMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

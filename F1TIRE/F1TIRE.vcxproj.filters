@@ -13,10 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Pliki źródłowe\include">
+      <UniqueIdentifier>{bacfbc6c-3efa-436d-a39c-e49e669dcf24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\src">
+      <UniqueIdentifier>{be0c98a1-ac6b-4bc2-8526-35471e61bf50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="F1TIRE.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="RaceMenu.cpp">
+      <Filter>Pliki źródłowe\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RaceMenu.h">
+      <Filter>Pliki źródłowe\include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
