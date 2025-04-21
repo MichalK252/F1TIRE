@@ -27,9 +27,15 @@
     <ClCompile Include="RaceMenu.cpp">
       <Filter>Pliki źródłowe\src</Filter>
     </ClCompile>
+    <ClCompile Include="TireMenu.cpp">
+      <Filter>Pliki źródłowe\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RaceMenu.h">
+      <Filter>Pliki źródłowe\include</Filter>
+    </ClInclude>
+    <ClInclude Include="TireMenu.h">
       <Filter>Pliki źródłowe\include</Filter>
     </ClInclude>
   </ItemGroup>

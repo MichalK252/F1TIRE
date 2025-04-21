@@ -3,7 +3,17 @@
 #include <string>
 #include <iomanip>
 #include "RaceMenu.h"
+#include "TireMenu.h"
 using namespace std;
+using namespace F1Sim;
+
+void clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
 
 
 int main()
@@ -19,7 +29,11 @@ int main()
     int selectedRace = getRaceSelection(races.size());
 
     string currentRace = races[selectedRace];
-    cout << "\nWybrano wyścig: " << currentRace << "\n";
+    cout << "\nSelected race: " << currentRace << "\n";
+
+    clearScreen();
+    cout << "Selected track: " << currentRace << "\n\n";
+    Tire tire = chooseTire();
 
     return 0;
 }
