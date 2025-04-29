@@ -130,10 +130,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RaceMenu.cpp" />
     <ClCompile Include="TireMenu.cpp" />
+    <ClCompile Include="TrackInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RaceMenu.h" />
     <ClInclude Include="TireMenu.h" />
+    <ClInclude Include="TrackInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
