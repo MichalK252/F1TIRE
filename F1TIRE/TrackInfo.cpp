@@ -43,12 +43,19 @@ namespace F1Sim {
         char answer;
         std::cin >> answer;
 
-        if (answer == 'y' || answer == 'Y') {
-            std::cout << "Enter the new temperature: ";
+        if (answer == 't' || answer == 'T') {
             int userTemp;
-            std::cin >> userTemp;
-            return userTemp;
+            while (true) {
+                std::cout << "Enter a new temperature (5°C - 60°C): ";
+                std::cin >> userTemp;
+
+                if (userTemp >= 10 && userTemp <= 50) {
+                    return userTemp;
+                }
+                else {
+                    std::cout << "Nieprawid³owa wartoœæ. Spróbuj ponownie." << std::endl;
+                }
+            }
         }
-        return defaultTemp;
 	}
 }

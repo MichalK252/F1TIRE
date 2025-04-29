@@ -2,8 +2,10 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <clocale>
 #include "RaceMenu.h"
 #include "TireMenu.h"
+#include "TrackInfo.h"
 using namespace std;
 using namespace F1Sim;
 
@@ -18,6 +20,7 @@ void clearScreen() {
 
 int main()
 {
+    setlocale(LC_ALL, "");
     vector<string> races = {
         "F1 Australian GP", "F1 Chinese GP", "F1 Japanese GP", "F1 Bahrain GP", "F1 Saudi Arabian GP", "F1 Miami GP",
         "F1 Emilia-Romagna GP", "F1 Monaco GP", "F1 Spain GP", "F1 Canada GP", "F1 Austria GP", "F1 Great Britain",
@@ -34,6 +37,8 @@ int main()
     clearScreen();
     cout << "Selected track: " << currentRace << "\n\n";
     Tire tire = chooseTire();
+
+    int temp = getTrackTemperatureWithUserOverride(currentRace);
 
     return 0;
 }
