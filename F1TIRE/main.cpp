@@ -38,7 +38,8 @@ int main()
     cout << "Selected track: " << currentRace << "\n\n";
     Tire tire = chooseTire();
 
-    int temp = getTrackTemperatureWithUserOverride(currentRace);
+    clearScreen();
+    int temp = getTrackTemperatureWithUserTemp(currentRace);
 
     return 0;
 }

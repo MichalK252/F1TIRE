@@ -4,7 +4,7 @@
 #include "TrackInfo.h"
 
 namespace F1Sim {
-	int getTrackTemperatureWithUserOverride(const std::string& raceName) {
+	int getTrackTemperatureWithUserTemp(const std::string& raceName) {
 		static const std::map<std::string, int> raceTemperature = {
             {"F1 Australian GP", 26},
             {"F1 Chinese GP", 22},
@@ -43,17 +43,17 @@ namespace F1Sim {
         char answer;
         std::cin >> answer;
 
-        if (answer == 't' || answer == 'T') {
+        if (answer == 'y' || answer == 'Y') {
             int userTemp;
             while (true) {
-                std::cout << "Enter a new temperature (5°C - 60°C): ";
+                std::cout << "Enter a new temperature (10°C - 60°C): ";
                 std::cin >> userTemp;
 
-                if (userTemp >= 10 && userTemp <= 50) {
+                if (userTemp >= 10 && userTemp <= 60) {
                     return userTemp;
                 }
                 else {
-                    std::cout << "Nieprawid³owa wartoœæ. Spróbuj ponownie." << std::endl;
+                    std::cout << "Are you serious?. Enter again" << std::endl;
                 }
             }
         }
