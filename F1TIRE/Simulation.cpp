@@ -54,9 +54,16 @@ namespace F1Sim {
 		}
 		else {
 			double finalRemainingLife = 100.0 - forecastDegradation;
-			if (finalRemainingLif)
+			if (finalRemainingLife < 0.0) finalRemainingLife = 0.0;
+
+			cout << "\n? The tire should last until the end of the race with the "
+				<< finalRemainingLife << "% lifespan\n";
+
+			if (finalRemainingLife < 10.0) {
+				cout << "?? CAUTION: Very low life expectancy! Risk of tire failure\n";
+			}
 		}
 	}
-
+	
 
 }
