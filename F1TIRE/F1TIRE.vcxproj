@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RaceMenu.h" />
+    <ClInclude Include="Simulation.h" />
     <ClInclude Include="TireMenu.h" />
     <ClInclude Include="TrackInfo.h" />
   </ItemGroup>

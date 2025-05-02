@@ -47,5 +47,8 @@
     <ClInclude Include="TrackInfo.h">
       <Filter>Pliki źródłowe\include</Filter>
     </ClInclude>
+    <ClInclude Include="Simulation.h">
+      <Filter>Pliki źródłowe\include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
