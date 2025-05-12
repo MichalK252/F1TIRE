@@ -49,20 +49,6 @@ namespace F1Sim {
                 break;
             }
         }
-
-        //if (pitStopLap > 0) {
-        //}
-        //else {
-        //    double finalRemainingLife = 100.0 - forecastDegradation;
-        //    if (finalRemainingLife < 0.0) finalRemainingLife = 0.0;
-
-        //    cout << "\n The tire should last until the end of the race with "
-        //        << finalRemainingLife << "% lifespan remaining\n";
-
-        //    if (finalRemainingLife < CRITICAL_LIFE_THRESHOLD) {
-        //        cout << " CAUTION: Very low life expectancy! Risk of tire failure\n";
-        //    }
-        //}
     }
 
     void calculateRemainingTireLife(Tire& tire, int totalLaps, int currentLap, int trackTemp) {

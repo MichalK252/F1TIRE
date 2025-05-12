@@ -41,30 +41,13 @@ int main()
     Tire tire = chooseTire();
     clearScreen();
 
-    int temp = F1Sim::getTrackTemperatureWithUserTemp(currentRace);
+    int trackTemp = F1Sim::getTrackTemperatureWithUserTemp(currentRace);
     int totalLaps;
 
     cout << "Enter the total number of laps: ";
     cin >> totalLaps;
 
-    int trackTemp = getTrackTemperatureWithUserTemp(currentRace);
-
     F1Sim::runSimulationLoop(tire, trackTemp, totalLaps);
-
-    //clearScreen();
-    //calculateRemainingTireLife(tire, totalLaps, currentLap, temp);
-
-    //int pitLap = suggestPitLap(tire, temp, totalLaps, currentLap);
-    //int lapsLeft = totalLaps - pitLap;
-
-    //cout << "\n>>> Suggested PIT STOP on lap: " << pitLap << "\n";
-
-    //Tire nextTire = suggestNextTire(lapsLeft, temp);
-    //cout << ">>> Recommended tire after PIT STOP: " << nextTire.type
-    //    << " (Degradation: " << nextTire.baseDegradation
-    //    << "%, Optimal temp: " << nextTire.optimalTemp << "°C)\n";
-
-
 
     return 0;
 }
