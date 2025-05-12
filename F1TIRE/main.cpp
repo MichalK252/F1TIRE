@@ -7,6 +7,7 @@
 #include "TireMenu.h"
 #include "TrackInfo.h"
 #include "Simulation.h"
+#include "SimulationFlow.h"
 
 using namespace std;
 using namespace F1Sim;
@@ -34,37 +35,34 @@ int main()
     showRaces(races);
     int selectedRace = getRaceSelection(races.size());
     string currentRace = races[selectedRace];
-    cout << "\nSelected race: " << currentRace << "\n";
 
     clearScreen();
     cout << "Selected track: " << currentRace << "\n\n";
-
     Tire tire = chooseTire();
     clearScreen();
-    cout << "Selected tire: " << tire << "\n";
 
-    int temp = getTrackTemperatureWithUserTemp(currentRace);
-
-    int totalLaps, currentLap;
+    int temp = F1Sim::getTrackTemperatureWithUserTemp(currentRace);
+    int totalLaps;
 
     cout << "Enter the total number of laps: ";
     cin >> totalLaps;
 
-    cout << "Enter the current lap: ";
-    cin >> currentLap;
+    int trackTemp = getTrackTemperatureWithUserTemp(currentRace);
 
-    clearScreen();
-    calculateRemainingTireLife(tire, totalLaps, currentLap, temp);
+    F1Sim::runSimulationLoop(tire, trackTemp, totalLaps);
 
-    int pitLap = suggestPitLap(tire, temp, totalLaps, currentLap);
-    int lapsLeft = totalLaps - pitLap;
+    //clearScreen();
+    //calculateRemainingTireLife(tire, totalLaps, currentLap, temp);
 
-    cout << "\n>>> Suggested PIT STOP on lap: " << pitLap << "\n";
+    //int pitLap = suggestPitLap(tire, temp, totalLaps, currentLap);
+    //int lapsLeft = totalLaps - pitLap;
 
-    Tire nextTire = suggestNextTire(lapsLeft, temp);
-    cout << ">>> Recommended tire after PIT STOP: " << nextTire.type
-        << " (Degradation: " << nextTire.baseDegradation
-        << "%, Optimal temp: " << nextTire.optimalTemp << "°C)\n";
+    //cout << "\n>>> Suggested PIT STOP on lap: " << pitLap << "\n";
+
+    //Tire nextTire = suggestNextTire(lapsLeft, temp);
+    //cout << ">>> Recommended tire after PIT STOP: " << nextTire.type
+    //    << " (Degradation: " << nextTire.baseDegradation
+    //    << "%, Optimal temp: " << nextTire.optimalTemp << "°C)\n";
 
 
 

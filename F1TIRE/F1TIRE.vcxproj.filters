@@ -36,6 +36,9 @@
     <ClCompile Include="Simulation.cpp">
       <Filter>Pliki źródłowe\src</Filter>
     </ClCompile>
+    <ClCompile Include="SimulationFlow.cpp">
+      <Filter>Pliki źródłowe\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RaceMenu.h">
@@ -48,6 +51,9 @@
       <Filter>Pliki źródłowe\include</Filter>
     </ClInclude>
     <ClInclude Include="Simulation.h">
+      <Filter>Pliki źródłowe\include</Filter>
+    </ClInclude>
+    <ClInclude Include="SimulationFlow.h">
       <Filter>Pliki źródłowe\include</Filter>
     </ClInclude>
   </ItemGroup>

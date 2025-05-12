@@ -130,12 +130,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RaceMenu.cpp" />
     <ClCompile Include="Simulation.cpp" />
+    <ClCompile Include="SimulationFlow.cpp" />
     <ClCompile Include="TireMenu.cpp" />
     <ClCompile Include="TrackInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RaceMenu.h" />
     <ClInclude Include="Simulation.h" />
+    <ClInclude Include="SimulationFlow.h" />
     <ClInclude Include="TireMenu.h" />
     <ClInclude Include="TrackInfo.h" />
   </ItemGroup>

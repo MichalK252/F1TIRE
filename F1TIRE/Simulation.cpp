@@ -42,7 +42,6 @@ namespace F1Sim {
 
             if (forecastDegradation >= 100.0 && pitStopLap < 0) {
                 pitStopLap = i;
-                cout << "\n\nCRITICAL WEAR AND TEAR!";
             }
             cout << "\n";
 

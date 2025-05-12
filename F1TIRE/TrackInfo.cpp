@@ -4,8 +4,8 @@
 #include "TrackInfo.h"
 
 namespace F1Sim {
-	int getTrackTemperatureWithUserTemp(const std::string& raceName) {
-		static const std::map<std::string, int> raceTemperature = {
+    int getTrackTemperatureWithUserTemp(const std::string& raceName) {
+        static const std::map<std::string, int> raceTemperature = {
             {"F1 Australian GP", 26},
             {"F1 Chinese GP", 22},
             {"F1 Japanese GP", 19},
@@ -53,9 +53,11 @@ namespace F1Sim {
                     return userTemp;
                 }
                 else {
-                    std::cout << "Are you serious?. Enter again" << std::endl;
+                    std::cout << "Are you serious? Enter again." << std::endl;
                 }
             }
         }
-	}
+        return defaultTemp;
+    }
 }
+ 
