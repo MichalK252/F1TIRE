@@ -4,16 +4,22 @@
 
 namespace F1Sim {
 
-    // Oblicza degradacjê opony na jedno okr¹¿enie
+    // oblicza degradacje opony na jedno okrazenie
     double computeLapDegradation(const Tire& tire, int trackTemp);
 
-    // Wypisuje aktualny status zu¿ycia opony
+    // wypisuje aktualny status zuzycia opony
     void printLapStatus(int currentLap, int totalLaps, double totalDegradation, double remainingLife);
 
-    // Wypisuje prognozê degradacji na resztê wyœcigu
+    // wypisuje prognoze degradacji na reszte wyscigu
     void printForecast(const Tire& tire, int currentLap, int totalLaps, int trackTemp, double totalDegradation);
 
-    // Oblicza zu¿ycie opony i symuluje resztê wyœcigu
+    // oblicza zuzycie opony i symuluje reszte wyscigu
     void calculateRemainingTireLife(Tire& tire, int totalLaps, int currentLap, int trackTemp);
+
+    int suggestPitLap(const Tire& tire, int trackTemp, int totalLaps, int currentLap);
+
+    Tire suggestNextTire(int lapsRemaining, int trackTemp);
+
+    void runFullRaceSimulation(Tire tire, int totalLaps, int trackTemp);
 
 }

@@ -6,8 +6,11 @@
 #include "RaceMenu.h"
 #include "TireMenu.h"
 #include "TrackInfo.h"
+#include "Simulation.h"
+
 using namespace std;
 using namespace F1Sim;
+
 
 void clearScreen() {
 #ifdef _WIN32
@@ -30,16 +33,40 @@ int main()
 
     showRaces(races);
     int selectedRace = getRaceSelection(races.size());
-
     string currentRace = races[selectedRace];
     cout << "\nSelected race: " << currentRace << "\n";
 
     clearScreen();
     cout << "Selected track: " << currentRace << "\n\n";
+
     Tire tire = chooseTire();
+    clearScreen();
+    cout << "Selected tire: " << tire << "\n";
+
+    int temp = getTrackTemperatureWithUserTemp(currentRace);
+
+    int totalLaps, currentLap;
+
+    cout << "Enter the total number of laps: ";
+    cin >> totalLaps;
+
+    cout << "Enter the current lap: ";
+    cin >> currentLap;
 
     clearScreen();
-    int temp = getTrackTemperatureWithUserTemp(currentRace);
+    calculateRemainingTireLife(tire, totalLaps, currentLap, temp);
+
+    int pitLap = suggestPitLap(tire, temp, totalLaps, currentLap);
+    int lapsLeft = totalLaps - pitLap;
+
+    cout << "\n>>> Suggested PIT STOP on lap: " << pitLap << "\n";
+
+    Tire nextTire = suggestNextTire(lapsLeft, temp);
+    cout << ">>> Recommended tire after PIT STOP: " << nextTire.type
+        << " (Degradation: " << nextTire.baseDegradation
+        << "%, Optimal temp: " << nextTire.optimalTemp << "°C)\n";
+
+
 
     return 0;
 }

@@ -1,16 +1,16 @@
 #pragma once
 #include <string>
 
+
 namespace F1Sim {
 
-	struct Tire {
-		std::string type;
-		int durability;
-		double baseDegradation;
-		int optimalTemp;
-	};
+    struct Tire {
+        std::string type;
+        double baseDegradation; 
+        int optimalTemp;        
+    };
 
-	void showTireOptions();
-	Tire chooseTire();
+    void showTireOptions();
+    Tire chooseTire();
 
 }
