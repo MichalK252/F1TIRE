@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
     F1Sim::runSimulationLoop(tire, trackTemp, totalLaps);
 
     Tire best = suggestBestTireOption(trackTemp);
-    cout << "\n[AI Suggestion] Best long-term tire for current temp: " << best.type << "\n";
+    cout << "\nBest long-term tire for current temp: " << best.type << "\n";
 
     return 0;
 }
