@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef SIMULATION_H
+#define SIMULATION_H
+
 #include "TireMenu.h"
 
 namespace F1Sim {
@@ -22,4 +25,9 @@ namespace F1Sim {
 
     void runFullRaceSimulation(Tire tire, int totalLaps, int trackTemp);
 
+    Tire suggestBestTireOption(int trackTemp);
+
 }
+
+
+#endif

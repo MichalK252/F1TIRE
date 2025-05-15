@@ -3,6 +3,7 @@
 #include <string>
 #include <iomanip>
 #include <clocale>
+#include <cstdlib>
 #include "RaceMenu.h"
 #include "TireMenu.h"
 #include "TrackInfo.h"
@@ -12,7 +13,6 @@
 using namespace std;
 using namespace F1Sim;
 
-
 void clearScreen() {
 #ifdef _WIN32
     system("cls");
@@ -21,10 +21,9 @@ void clearScreen() {
 #endif
 }
 
-
-int main()
-{
+int main(int argc, char* argv[]) {
     setlocale(LC_ALL, "");
+
     vector<string> races = {
         "F1 Australian GP", "F1 Chinese GP", "F1 Japanese GP", "F1 Bahrain GP", "F1 Saudi Arabian GP", "F1 Miami GP",
         "F1 Emilia-Romagna GP", "F1 Monaco GP", "F1 Spain GP", "F1 Canada GP", "F1 Austria GP", "F1 Great Britain",
@@ -38,16 +37,38 @@ int main()
 
     clearScreen();
     cout << "Selected track: " << currentRace << "\n\n";
+
     Tire tire = chooseTire();
     clearScreen();
 
-    int trackTemp = F1Sim::getTrackTemperatureWithUserTemp(currentRace);
+    int trackTemp;
     int totalLaps;
 
-    cout << "Enter the total number of laps: ";
-    cin >> totalLaps;
+    if (argc >= 3) {
+        totalLaps = atoi(argv[1]);
+        trackTemp = atoi(argv[2]);
+
+        if (totalLaps <= 0 || totalLaps > 100) {
+            cout << "Invalid number of laps passed via command line. Using manual input.\n";
+            cout << "Enter the total number of laps: ";
+            cin >> totalLaps;
+        }
+
+        if (trackTemp < -20 || trackTemp > 100) {
+            cout << "Invalid temperature passed via command line. Using automatic temp.\n";
+            trackTemp = F1Sim::getTrackTemperatureWithUserTemp(currentRace);
+        }
+    }
+    else {
+        trackTemp = F1Sim::getTrackTemperatureWithUserTemp(currentRace);
+        cout << "Enter the total number of laps: ";
+        cin >> totalLaps;
+    }
 
     F1Sim::runSimulationLoop(tire, trackTemp, totalLaps);
+
+    Tire best = suggestBestTireOption(trackTemp);
+    cout << "\n[AI Suggestion] Best long-term tire for current temp: " << best.type << "\n";
 
     return 0;
 }
