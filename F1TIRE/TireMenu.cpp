@@ -28,12 +28,23 @@ namespace F1Sim {
 
         do {
             cout << "Your choice: ";
-            cin >> choice;
+
+            if (!(cin >> choice)) { 
+                cout << "Invalid input. Please enter a number between 1 and 5.\n";
+                cin.clear();                 
+                cin.ignore(10000, '\n');     
+                choice = 0;                  
+                continue;                   
+            }
+
+            if (choice < 1 || choice > 5) {
+                cout << "Please choose a number between 1 and 5.\n";
+            }
+
         } while (choice < 1 || choice > 5);
 
+
         Tire selectedTire;
-        // first value - degradacja opony po okrazeniu
-        // second value - optymalna temperatura
         switch (choice)
         {
         case 1:

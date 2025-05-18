@@ -39,21 +39,37 @@ namespace F1Sim {
         }
 
         std::cout << "Track temperature: " << defaultTemp << "°C" << std::endl;
-        std::cout << "Do you want to change the track temperature? (y/n): ";
+
         char answer;
-        std::cin >> answer;
+        while (true) {
+            std::cout << "Do you want to change the track temperature? (y/n): ";
+            std::cin >> answer;
+
+            if (answer == 'y' || answer == 'Y' || answer == 'n' || answer == 'N') {
+                break;
+            }
+            else {
+                std::cout << "Please enter 'y' or 'n'.\n";
+                std::cin.clear();
+                std::cin.ignore(10000, '\n');
+            }
+        }
 
         if (answer == 'y' || answer == 'Y') {
             int userTemp;
             while (true) {
                 std::cout << "Enter a new temperature (10°C - 60°C): ";
-                std::cin >> userTemp;
-
+                if (!(std::cin >> userTemp)) {
+                    std::cout << "Invalid input. Please enter a number.\n";
+                    std::cin.clear();
+                    std::cin.ignore(10000, '\n');
+                    continue;
+                }
                 if (userTemp >= 10 && userTemp <= 60) {
                     return userTemp;
                 }
                 else {
-                    std::cout << "Are you serious? Enter again." << std::endl;
+                    std::cout << "Are you serious? Enter again.\n";
                 }
             }
         }

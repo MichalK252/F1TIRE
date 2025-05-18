@@ -4,11 +4,13 @@
 #include <iomanip>
 #include <clocale>
 #include <cstdlib>
+#include <limits>
 #include "RaceMenu.h"
 #include "TireMenu.h"
 #include "TrackInfo.h"
 #include "Simulation.h"
 #include "SimulationFlow.h"
+
 
 using namespace std;
 using namespace F1Sim;
@@ -48,14 +50,28 @@ int main(int argc, char* argv[]) {
         totalLaps = atoi(argv[1]);
         trackTemp = atoi(argv[2]);
 
-        if (totalLaps <= 0 || totalLaps > 100) {
-            cout << "Invalid number of laps passed via command line. Using manual input.\n";
-            cout << "Enter the total number of laps: ";
-            cin >> totalLaps;
+        if (totalLaps <= 0 || totalLaps > 150) {
+            std::cout << "Invalid number of laps passed via command line. Using manual input\n";
+
+            while (true) {
+                std::cout << "Enter the total number of laps: ";
+                std::cin >> totalLaps;
+
+                if (std::cin.fail() || totalLaps <= 0 || totalLaps > 150) {
+                    std::cin.clear(); 
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+                    std::cout << "Invalid input. Please enter a number between 1 and 150.\n";
+                }
+                else {
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    break; 
+                }
+            }
         }
 
+
         if (trackTemp < -20 || trackTemp > 100) {
-            cout << "Invalid temperature passed via command line. Using automatic temp.\n";
+            cout << "Invalid temperature passed via command line. Using automatic temp\n";
             trackTemp = F1Sim::getTrackTemperatureWithUserTemp(currentRace);
         }
     }

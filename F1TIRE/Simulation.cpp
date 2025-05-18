@@ -6,8 +6,13 @@
 #include "Simulation.h"
 #include "TireMenu.h"
 
+#define RESET   "\033[0m"
+#define YELLOW  "\033[33m"
+
 #define DEGRADATION_MULTIPLIER 1.5
 #define MAX_LAPS 200
+
+
 typedef std::vector<F1Sim::Tire> TireList;
 
 using namespace std;
@@ -37,7 +42,7 @@ namespace F1Sim {
         double forecastDegradation = totalDegradation;
         int pitStopLap = -1;
 
-        cout << "\n Degradation forecast:\n";
+        cout << "\nDegradation forecast:\n";
 
         for (int i = currentLap + 1; i <= totalLaps; i++) {
             double lapDegradation = computeLapDegradation(tire, trackTemp);
@@ -82,9 +87,9 @@ namespace F1Sim {
         int pitStopLap = -1;
 
         cout << fixed << setprecision(2);
-        cout << "\n Tire wear simulation: " << tire.type
+        cout << "\nTire wear simulation: " << tire.type
             << " (optimal temp: " << tire.optimalTemp << "°C)\n";
-        cout << "------------------------------------------------\n";
+        cout << "-------------------------------------------------\n";
 
         for (int i = 1; i <= currentLap; ++i) {
             double lapDegradation = computeLapDegradation(tire, trackTemp);
@@ -189,7 +194,6 @@ namespace F1Sim {
             remainingLife = 100.0 - totalDegradation;
             printLapStatus(currentLap, totalLaps, totalDegradation, remainingLife);
 
-            // If tire already failed, we need an immediate pit stop
             if (tireFailureLap > 0 && tireFailureLap <= currentLap) {
                 cout << " Tire worn out on lap " << tireFailureLap << "! PIT STOP necessary\n";
 
@@ -219,10 +223,8 @@ namespace F1Sim {
                 }
             }
 
-            // If tire is still good, calculate future pit stop recommendation
             int pitLap = suggestPitLap(tire, trackTemp, totalLaps, currentLap);
 
-            // No pit stop needed or beyond current race
             if (pitLap == -1) {
                 cout << "\nTire should last until the end of the race.\n";
 
@@ -239,7 +241,6 @@ namespace F1Sim {
                     break;
                 }
             }
-            // Suggested pit stop is at the current lap
             else if (pitLap == currentLap) {
                 cout << "\n>>> Suggested PIT STOP now (lap " << pitLap << ")\n";
 
@@ -258,17 +259,17 @@ namespace F1Sim {
                     tire = nextTire;
                     totalDegradation = 0.0;
                     remainingLife = 100.0;
-                    lastPitLap = currentLap + 1; 
+                    lastPitLap = currentLap + 1;
                     continue;
                 }
                 else {
                     cout << "Continuing without pit stop.\n";
                 }
 
-                currentLap++; 
+                currentLap++;
             }
             else {
-                cout << "\n>>> Suggested PIT STOP on lap: " << pitLap << "\n";
+                cout << "\n" << YELLOW << ">>> Suggested PIT STOP on lap : " << pitLap << RESET << "\n";
 
                 int lapsToRun;
                 cout << "How many laps do you want to run? (0 to end simulation): ";

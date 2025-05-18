@@ -26,7 +26,6 @@ namespace F1Sim {
     void runFullRaceSimulation(Tire tire, int totalLaps, int trackTemp);
 
     Tire suggestBestTireOption(int trackTemp);
-
 }
 
 

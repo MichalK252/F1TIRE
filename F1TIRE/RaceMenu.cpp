@@ -26,8 +26,20 @@ namespace F1Sim {
         int choice;
         do {
             cout << "\nEnter a race number: ";
-            cin >> choice;
+            if (!(cin >> choice)) {
+                cout << "Invalid input. Please enter a number between 1 and " << max << ".\n";
+                cin.clear(); 
+                cin.ignore(10000, '\n');
+                continue; 
+            }
+
+            if (choice < 1 || choice > max) {
+                cout << "Please enter a number between 1 and " << max << ".\n";
+            }
+
         } while (choice < 1 || choice > max);
+
         return choice - 1;
     }
+
 }
