@@ -27,19 +27,3 @@ F1 Tire Simulator is a console-based application that simulates Formula 1 tire w
 - Windows or Linux environment.
 
 ---
-
-### Building the Project
-
-#### Using Visual Studio (Windows)
-
-1. Open the `.sln` file in Visual Studio.
-2. Build the project (choose Debug or Release).
-3. The executable `F1TIRE.exe` will be created in the `Debug` or `Release` folder.
-
-#### Using CMake
-
-```bash
-mkdir build
-cd build
-cmake ..
-cmake --build .
