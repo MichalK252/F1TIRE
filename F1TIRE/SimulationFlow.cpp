@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include "Simulation.h"
 #include "TireMenu.h"
 #include "SimulationFlow.h"
@@ -35,7 +35,7 @@ namespace F1Sim {
             cout << "\n>>> Suggested PIT STOP on lap: " << pitLap << "\n\n";
             cout << ">>> Recommended tire after PIT STOP: " << nextTire.type
                 << " (Degradation: " << nextTire.baseDegradation
-                << "%, Optimal temp: " << nextTire.optimalTemp << "°C)\n";
+                << "%, Optimal temp: " << nextTire.optimalTemp << "ï¿½C)\n";
 
             char choice;
             cout << "\nDo you want to continue simulation with this new tire? (y/n): ";

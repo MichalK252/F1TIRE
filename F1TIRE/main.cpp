@@ -10,6 +10,7 @@
 #include "TrackInfo.h"
 #include "Simulation.h"
 #include "SimulationFlow.h"
+#include "HelpDisplay.h"
 
 
 using namespace std;
@@ -25,6 +26,11 @@ void clearScreen() {
 
 int main(int argc, char* argv[]) {
     setlocale(LC_ALL, "");
+
+    if (isHelpRequested(argc, argv)) {
+        showHelp();
+        return 0;
+    }
 
     vector<string> races = {
         "F1 Australian GP", "F1 Chinese GP", "F1 Japanese GP", "F1 Bahrain GP", "F1 Saudi Arabian GP", "F1 Miami GP",
@@ -58,13 +64,13 @@ int main(int argc, char* argv[]) {
                 std::cin >> totalLaps;
 
                 if (std::cin.fail() || totalLaps <= 0 || totalLaps > 150) {
-                    std::cin.clear(); 
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     std::cout << "Invalid input. Please enter a number between 1 and 150.\n";
                 }
                 else {
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    break; 
+                    break;
                 }
             }
         }

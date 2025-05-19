@@ -127,6 +127,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HelpDisplay.cpp" />
+    <ClCompile Include="InputUtils.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RaceMenu.cpp" />
     <ClCompile Include="Simulation.cpp" />
@@ -135,6 +137,8 @@
     <ClCompile Include="TrackInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HelpDisplay.h" />
+    <ClInclude Include="InputUtils.h" />
     <ClInclude Include="RaceMenu.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="SimulationFlow.h" />
