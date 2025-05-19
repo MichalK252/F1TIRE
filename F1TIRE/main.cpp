@@ -11,6 +11,7 @@
 #include "Simulation.h"
 #include "SimulationFlow.h"
 #include "HelpDisplay.h"
+#include "FileHandler2.h"
 
 
 using namespace std;
@@ -88,6 +89,24 @@ int main(int argc, char* argv[]) {
     }
 
     F1Sim::runSimulationLoop(tire, trackTemp, totalLaps);
+
+
+    float tireWear = 32.5f;
+    float bestLap = 87.32f;
+    int pitLap = 18;
+
+    char saveChoice;
+    std::cout << "\nDo you want to save the data to a CSV file? (y/n): ";
+    std::cin >> saveChoice;
+
+    if (saveChoice == 'y' || saveChoice == 'Y') {
+        F1Sim::saveSimulationResultCSV(currentRace, trackTemp, totalLaps, tire.type, tireWear, bestLap, pitLap);
+        std::cout << "\nSimulation data saved to 'simulation_results.csv'.\n";
+    }
+    else {
+        std::cout << "\nThe data has not been saved.\n";
+    }
+
 
     Tire best = suggestBestTireOption(trackTemp);
     cout << "\nBest long-term tire for current temp: " << best.type << "\n";

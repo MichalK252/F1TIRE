@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileHandler2.cpp" />
     <ClCompile Include="HelpDisplay.cpp" />
     <ClCompile Include="InputUtils.cpp" />
     <ClCompile Include="main.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="TrackInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileHandler2.h" />
     <ClInclude Include="HelpDisplay.h" />
     <ClInclude Include="InputUtils.h" />
     <ClInclude Include="RaceMenu.h" />

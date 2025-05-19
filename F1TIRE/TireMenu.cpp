@@ -27,7 +27,7 @@ namespace F1Sim {
         showTireOptions();
 
         do {
-            cout << "Your choice: ";
+            cout << "\nYour choice: ";
 
             if (!(cin >> choice)) { 
                 cout << "Invalid input. Please enter a number between 1 and 5.\n";
