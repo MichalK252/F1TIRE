@@ -27,3 +27,6 @@ F1 Tire Simulator is a console-based application that simulates Formula 1 tire w
 - Windows or Linux environment.
 
 ---
+
+
+## ITS NOT THE FULL COMPLETED PROJECT. DONT USE IT YET
