@@ -107,7 +107,6 @@ namespace F1Sim {
 
         if (pitStopLap > 0) {
             cout << " Tire worn out on lap " << pitStopLap << "! PIT STOP necessary\n";
-            // Don't continue with forecast if tire is already worn out
             return;
         }
 
@@ -127,17 +126,14 @@ namespace F1Sim {
 
         double totalDegradation = 0.0;
 
-        // Calculate degradation for completed laps
         for (int i = 1; i <= currentLap; ++i) {
             totalDegradation += computeLapDegradation(tire, trackTemp);
         }
 
-        // If tire is already worn out, suggest immediate pit stop
         if (totalDegradation >= 100.0) {
             return currentLap;
         }
 
-        // Find the optimal lap for a pit stop
         for (int i = currentLap + 1; i <= totalLaps; ++i) {
             totalDegradation += computeLapDegradation(tire, trackTemp);
             double remainingLife = 100.0 - totalDegradation;
@@ -147,7 +143,7 @@ namespace F1Sim {
             }
 
             if (remainingLife < 10.0) {
-                return i - 1; // Return the previous lap to avoid tire failure
+                return i - 1; 
             }
         }
 
@@ -301,9 +297,13 @@ namespace F1Sim {
             { "Hard", 3.0, 80 }
         };
 
-        sort(options.begin(), options.end(), [](const Tire& a, const Tire& b) {
-            return a.baseDegradation < b.baseDegradation;
-            });
+        for (size_t i = 0; i < options.size(); ++i) {
+            for (size_t j = 0; j < options.size() - i - 1; ++j) {
+                if (options[j].baseDegradation > options[j + 1].baseDegradation) {
+                    std::swap(options[j], options[j + 1]);
+                }
+            }
+        }
 
         cout << "\n>>> Available tire options (sorted by degradation efficiency):\n";
         for (const Tire& t : options) {

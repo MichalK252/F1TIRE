@@ -45,6 +45,9 @@
     <ClCompile Include="HelpDisplay.cpp">
       <Filter>Pliki źródłowe\src</Filter>
     </ClCompile>
+    <ClCompile Include="FileHandler2.cpp">
+      <Filter>Pliki źródłowe\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RaceMenu.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="HelpDisplay.h">
       <Filter>Pliki źródłowe\include</Filter>
+    </ClInclude>
+    <ClInclude Include="FileHandler2.h">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
