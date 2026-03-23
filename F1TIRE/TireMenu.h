@@ -1,6 +1,5 @@
-#pragma once
+﻿#pragma once
 #include <string>
-
 
 namespace F1Sim {
 

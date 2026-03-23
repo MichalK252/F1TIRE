@@ -2,316 +2,165 @@
 #include <iomanip>
 #include <vector>
 #include <algorithm>
-
+#include <cmath>
 #include "Simulation.h"
 #include "TireMenu.h"
 
-#define RESET   "\033[0m"
-#define YELLOW  "\033[33m"
-
-#define DEGRADATION_MULTIPLIER 1.5
-#define MAX_LAPS 200
-
-
-typedef std::vector<F1Sim::Tire> TireList;
+#define RESET  "\033[0m"
+#define YELLOW "\033[33m"
+#define RED    "\033[31m"
+#define GREEN  "\033[32m"
+#define CYAN   "\033[36m"
 
 using namespace std;
 
 namespace F1Sim {
-    const double TEMP_THRESHOLD = 5.0;
-    const double CRITICAL_LIFE_THRESHOLD = 10.0;
 
-    double computeLapDegradation(const Tire& tire, int trackTemp) {
-        double lapDegradation = tire.baseDegradation;
+    const double TEMP_THRESHOLD     = 10.0;
 
-        if (trackTemp < tire.optimalTemp - TEMP_THRESHOLD ||
-            trackTemp > tire.optimalTemp + TEMP_THRESHOLD) {
-            lapDegradation *= 1.5;
+    const double CRITICAL_WEAR      = 15.0;
+    const double EARLY_WARNING_WEAR = 30.0;
+
+    double computeLapDegradation(const Tire& tire, int trackTemp, double currentWear) {
+        double lapDeg = tire.baseDegradation;
+
+        double tempDiff = fabs((double)(trackTemp - tire.optimalTemp));
+        if (tempDiff > TEMP_THRESHOLD) {
+            double over  = tempDiff - TEMP_THRESHOLD;
+            double penalty = 1.0 + (over / 60.0);
+            if (penalty > 1.4) penalty = 1.4;
+            lapDeg *= penalty;
         }
 
-        return lapDegradation;
+        double wearFactor = 1.0 + (currentWear / 100.0) * 0.25;
+        lapDeg *= wearFactor;
+
+        return lapDeg;
     }
 
-    void printLapStatus(int currentLap, int totalLaps, double totalDegradation, double remainingLife) {
-        cout << "Lap: " << currentLap << " / " << totalLaps
-            << " | Degradation: " << totalDegradation << "%"
-            << " | Remaining life: " << remainingLife << "%\n";
+    double computeLapTime(const Tire& tire, double tireWear, double baseLapTime) {
+        double tireBonus = 0.0;
+        if      (tire.type == "Soft")         tireBonus = -0.5;
+        else if (tire.type == "Medium")       tireBonus = -0.25;
+        else if (tire.type == "Hard")         tireBonus =  0.0;
+        else if (tire.type == "Intermediate") tireBonus =  1.5;
+        else if (tire.type == "Wet")          tireBonus =  3.0;
+
+        double wearPenalty = (tireWear / 100.0) * 0.03 * baseLapTime;
+        return baseLapTime + tireBonus + wearPenalty;
     }
 
-    void printForecast(const Tire& tire, int currentLap, int totalLaps, int trackTemp, double totalDegradation) {
-        double forecastDegradation = totalDegradation;
-        int pitStopLap = -1;
+    void printLapStatus(int currentLap, int totalLaps, double totalDegradation,
+                        double remainingLife, double lapTime) {
+        const char* color = GREEN;
+        if      (remainingLife <= CRITICAL_WEAR)      color = RED;
+        else if (remainingLife <= EARLY_WARNING_WEAR) color = YELLOW;
 
-        cout << "\nDegradation forecast:\n";
+        cout << left
+             << setw(6)  << currentLap
+             << setw(10) << ""
+             << color
+             << setw(12) << fixed << setprecision(1) << totalDegradation
+             << setw(12) << remainingLife
+             << RESET
+             << setprecision(3) << lapTime;
+    }
+
+    void printForecast(const Tire& tire, int currentLap, int totalLaps,
+                       int trackTemp, double totalDegradation) {
+        double forecastDeg = totalDegradation;
+        int    pitStopLap  = -1;
+
+        cout << "\n" << YELLOW << "--- Forecast from lap " << currentLap
+             << " to " << totalLaps << " ---" << RESET << "\n";
 
         for (int i = currentLap + 1; i <= totalLaps; i++) {
-            double lapDegradation = computeLapDegradation(tire, trackTemp);
-            forecastDegradation += lapDegradation;
-            double forecastRemaining = 100.0 - forecastDegradation;
+            forecastDeg += computeLapDegradation(tire, trackTemp, forecastDeg);
+            double rem = 100.0 - forecastDeg;
+            if (rem < 0.0) rem = 0.0;
 
-            if (forecastRemaining < 0.0) forecastRemaining = 0.0;
+            cout << "  Lap " << setw(3) << i << ": Life "
+                 << fixed << setprecision(1) << rem << "%";
 
-            cout << "Lap " << i << ": Remaining " << forecastRemaining << "%";
-
-            if (forecastDegradation >= 100.0 && pitStopLap < 0) {
+            if (forecastDeg >= 100.0 && pitStopLap < 0) {
                 pitStopLap = i;
-                cout << " - TIRE FAILURE";
+                cout << RED << "  !! FAILURE !!" << RESET;
             }
             cout << "\n";
-
-            if (pitStopLap > 0 && i >= pitStopLap) {
-                break;
-            }
+            if (forecastDeg >= 100.0) break;
         }
 
-        if (pitStopLap == -1) {
-            cout << "\nTire should last until the end of the race.\n";
-        }
-        else {
-        }
+        if (pitStopLap == -1)
+            cout << GREEN << "  -> Tire should last until end.\n" << RESET;
+        else
+            cout << RED << "  -> Failure predicted on lap " << pitStopLap << "\n" << RESET;
     }
 
-    void calculateRemainingTireLife(Tire& tire, int totalLaps, int currentLap, int trackTemp) {
-        if (totalLaps <= 0 || currentLap < 0 || currentLap > totalLaps) {
-            cout << "Invalid number of laps\n";
-            return;
-        }
+    int suggestPitLap(const Tire& tire, int trackTemp, int totalLaps,
+                      int currentLap, double currentWear) {
+        if (totalLaps <= 0 || currentLap < 0 || currentLap > totalLaps) return -1;
 
-        if (tire.baseDegradation <= 0.0 || tire.baseDegradation > 20.0) {
-            cout << "Invalid tire degradation value\n";
-            return;
-        }
-
-        double totalDegradation = 0.0;
-        double remainingLife = 100.0;
-        int pitStopLap = -1;
-
-        cout << fixed << setprecision(2);
-        cout << "\nTire wear simulation: " << tire.type
-            << " (optimal temp: " << tire.optimalTemp << "°C)\n";
-        cout << "-------------------------------------------------\n";
-
-        for (int i = 1; i <= currentLap; ++i) {
-            double lapDegradation = computeLapDegradation(tire, trackTemp);
-            totalDegradation += lapDegradation;
-
-            if (totalDegradation >= 100.00) {
-                totalDegradation = 100.00;
-                pitStopLap = i;
-                break;
-            }
-        }
-
-        remainingLife = 100.0 - totalDegradation;
-        printLapStatus(currentLap, totalLaps, totalDegradation, remainingLife);
-
-        if (pitStopLap > 0) {
-            cout << " Tire worn out on lap " << pitStopLap << "! PIT STOP necessary\n";
-            return;
-        }
-
-        if (currentLap < totalLaps) {
-            printForecast(tire, currentLap, totalLaps, trackTemp, totalDegradation);
-        }
-        else {
-            cout << " The race is over! Final tire life: " << remainingLife << "%\n";
-        }
-    }
-
-    int suggestPitLap(const Tire& tire, int trackTemp, int totalLaps, int currentLap) {
-        if (totalLaps <= 0 || currentLap < 0 || currentLap > totalLaps) {
-            cout << "Invalid number of laps for pit stop suggestion\n";
-            return -1;
-        }
-
-        double totalDegradation = 0.0;
-
-        for (int i = 1; i <= currentLap; ++i) {
-            totalDegradation += computeLapDegradation(tire, trackTemp);
-        }
-
-        if (totalDegradation >= 100.0) {
-            return currentLap;
-        }
-
+        double deg = currentWear;
         for (int i = currentLap + 1; i <= totalLaps; ++i) {
-            totalDegradation += computeLapDegradation(tire, trackTemp);
-            double remainingLife = 100.0 - totalDegradation;
+            deg += computeLapDegradation(tire, trackTemp, deg);
+            double remaining = 100.0 - deg;
 
-            if (remainingLife <= 20.0 && remainingLife >= 10.0) {
-                return i;
+            if (remaining <= EARLY_WARNING_WEAR) {
+
+                int safetyBuffer = (remaining <= CRITICAL_WEAR) ? 0 : 2;
+                return (std::max)(currentLap + 1, i - safetyBuffer);
             }
-
-            if (remainingLife < 10.0) {
-                return i - 1; 
+            if (deg >= 100.0) {
+                return (std::max)(currentLap + 1, i - 1);
             }
         }
-
         return -1;
     }
 
     Tire suggestNextTire(int lapsRemaining, int trackTemp) {
-        if (lapsRemaining >= 15) {
-            return { "Hard", 3.0, 80 };
-        }
-        else if (trackTemp > 35) {
-            return { "Medium", 4.0, 85 };
-        }
-        else {
-            return { "Soft", 5.0, 90 };
-        }
-    }
-
-
-    void runFullRaceSimulation(Tire tire, int totalLaps, int trackTemp) {
-        int currentLap = 1;
-        bool raceOngoing = true;
-        double totalDegradation = 0.0;
-        int lastPitLap = 1;
-
-        while (raceOngoing) {
-            cout << "\n=== Simulating from lap " << currentLap << " / " << totalLaps << " ===\n";
-
-            totalDegradation = 0.0;
-            double remainingLife = 100.0;
-            int tireFailureLap = -1;
-
-            for (int i = lastPitLap; i <= currentLap; ++i) {
-                double lapDegradation = computeLapDegradation(tire, trackTemp);
-                totalDegradation += lapDegradation;
-
-                if (totalDegradation >= 100.0 && tireFailureLap == -1) {
-                    tireFailureLap = i;
-                    totalDegradation = 100.0;
-                }
-            }
-
-
-            remainingLife = 100.0 - totalDegradation;
-            printLapStatus(currentLap, totalLaps, totalDegradation, remainingLife);
-
-            if (tireFailureLap > 0 && tireFailureLap <= currentLap) {
-                cout << " Tire worn out on lap " << tireFailureLap << "! PIT STOP necessary\n";
-
-                if (currentLap == totalLaps) {
-                    cout << "Race finished with worn tires!\n";
-                    break;
-                }
-
-                char confirm;
-                cout << "Do you want to make a pit stop now? (y/n): ";
-                cin >> confirm;
-
-                if (confirm == 'y' || confirm == 'Y') {
-                    int lapsRemaining = totalLaps - currentLap;
-                    Tire nextTire = suggestNextTire(lapsRemaining, trackTemp);
-                    cout << "\n>>> Switched to " << nextTire.type << " tires (Degradation: "
-                        << nextTire.baseDegradation << "%, Optimal temp: "
-                        << nextTire.optimalTemp << "°C)\n";
-
-                    tire = nextTire;
-                    remainingLife = 100.00;
-                    totalDegradation = 0.0;
-                    continue;
-                }
-                else {
-                    cout << "Warning: Continuing with worn tires is dangerous!\n";
-                }
-            }
-
-            int pitLap = suggestPitLap(tire, trackTemp, totalLaps, currentLap);
-
-            if (pitLap == -1) {
-                cout << "\nTire should last until the end of the race.\n";
-
-                char continueRace;
-                cout << "Do you want to finish the race? (y/n): ";
-                cin >> continueRace;
-
-                if (continueRace == 'y' || continueRace == 'Y') {
-                    cout << "Race simulation finished!\n";
-                    break;
-                }
-                else {
-                    cout << "Simulation stopped by user.\n";
-                    break;
-                }
-            }
-            else if (pitLap == currentLap) {
-                cout << "\n>>> Suggested PIT STOP now (lap " << pitLap << ")\n";
-
-                int lapsRemaining = totalLaps - pitLap;
-                Tire nextTire = suggestNextTire(lapsRemaining, trackTemp);
-                cout << ">>> Recommended tire: "
-                    << nextTire.type << " (Degradation: "
-                    << nextTire.baseDegradation << "%, Optimal temp: "
-                    << nextTire.optimalTemp << "°C)\n";
-
-                char confirm;
-                cout << "Do you want to switch to this tire and continue? (y/n): ";
-                cin >> confirm;
-
-                if (confirm == 'y' || confirm == 'Y') {
-                    tire = nextTire;
-                    totalDegradation = 0.0;
-                    remainingLife = 100.0;
-                    lastPitLap = currentLap + 1;
-                    continue;
-                }
-                else {
-                    cout << "Continuing without pit stop.\n";
-                }
-
-                currentLap++;
-            }
-            else {
-                cout << "\n" << YELLOW << ">>> Suggested PIT STOP on lap : " << pitLap << RESET << "\n";
-
-                int lapsToRun;
-                cout << "How many laps do you want to run? (0 to end simulation): ";
-                cin >> lapsToRun;
-
-                if (lapsToRun <= 0) {
-                    cout << "Simulation stopped by user.\n";
-                    break;
-                }
-
-                currentLap += lapsToRun;
-                if (currentLap > totalLaps) {
-                    currentLap = totalLaps;
-                    cout << "Reached the end of the race.\n";
-                }
-            }
-
-            if (currentLap >= totalLaps) {
-                cout << "Race finished!\n";
-                break;
-            }
+        if (lapsRemaining >= 25) {
+            return { "Hard", 2.0, 30 };
+        } else if (lapsRemaining >= 12) {
+            return (trackTemp > 38) ? Tire{ "Medium", 2.8, 38 }
+                                    : Tire{ "Hard",   2.0, 30 };
+        } else {
+            return (trackTemp > 40) ? Tire{ "Medium", 2.8, 38 }
+                                    : Tire{ "Soft",   4.0, 45 };
         }
     }
 
     Tire suggestBestTireOption(int trackTemp) {
         vector<Tire> options = {
-            { "Soft", 5.0, 90 },
-            { "Medium", 4.0, 85 },
-            { "Hard", 3.0, 80 }
+            { "Soft",         4.0, 45 },
+            { "Medium",       2.8, 38 },
+            { "Hard",         2.0, 30 },
+            { "Intermediate", 2.5, 20 },
+            { "Wet",          2.2, 10 }
         };
 
-        for (size_t i = 0; i < options.size(); ++i) {
-            for (size_t j = 0; j < options.size() - i - 1; ++j) {
-                if (options[j].baseDegradation > options[j + 1].baseDegradation) {
-                    std::swap(options[j], options[j + 1]);
-                }
-            }
-        }
+        sort(options.begin(), options.end(), [&](const Tire& a, const Tire& b) {
+            double da = a.baseDegradation;
+            double db = b.baseDegradation;
+            if (fabs((double)(trackTemp - a.optimalTemp)) > TEMP_THRESHOLD)
+                da *= 1.2;
+            if (fabs((double)(trackTemp - b.optimalTemp)) > TEMP_THRESHOLD)
+                db *= 1.2;
+            return da < db;
+        });
 
-        cout << "\n>>> Available tire options (sorted by degradation efficiency):\n";
+        cout << "\n>>> Available tire options (sorted by durability at " << trackTemp << " C):\n";
         for (const Tire& t : options) {
-            cout << " - " << t.type
-                << " (Degradation: " << t.baseDegradation << "%, Optimal Temp: " << t.optimalTemp << "°C)\n";
+            double diff = fabs((double)(trackTemp - t.optimalTemp));
+            const char* fit = (diff <= TEMP_THRESHOLD) ? GREEN
+                            : (diff <= 20)              ? YELLOW : RED;
+            cout << " - " << fit << t.type << RESET
+                 << " (base " << t.baseDegradation << "%/lap"
+                 << ", opt temp " << t.optimalTemp << " C";
+            if (diff <= TEMP_THRESHOLD) cout << GREEN << " [IDEAL]" << RESET;
+            cout << ")\n";
         }
 
-        return options.front();
+        return options[0];
     }
 
 }

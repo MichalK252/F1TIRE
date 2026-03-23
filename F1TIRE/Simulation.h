@@ -1,32 +1,34 @@
-#pragma once
-
+﻿#pragma once
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
+#include <string>
 #include "TireMenu.h"
 
 namespace F1Sim {
 
-    // oblicza degradacje opony na jedno okrazenie
-    double computeLapDegradation(const Tire& tire, int trackTemp);
+    struct SimulationResult {
+        double      finalTireWear;
+        double      bestLapTime;
+        int         recommendedPitLap;
+        int         actualPitLap;
+        std::string finalTireType;
+    };
 
-    // wypisuje aktualny status zuzycia opony
-    void printLapStatus(int currentLap, int totalLaps, double totalDegradation, double remainingLife);
+    double computeLapDegradation(const Tire& tire, int trackTemp, double currentWear);
+    double computeLapTime(const Tire& tire, double tireWear, double baseLapTime);
 
-    // wypisuje prognoze degradacji na reszte wyscigu
-    void printForecast(const Tire& tire, int currentLap, int totalLaps, int trackTemp, double totalDegradation);
+    void printLapStatus(int currentLap, int totalLaps, double totalDegradation,
+                        double remainingLife, double lapTime);
 
-    // oblicza zuzycie opony i symuluje reszte wyscigu
-    void calculateRemainingTireLife(Tire& tire, int totalLaps, int currentLap, int trackTemp);
+    void printForecast(const Tire& tire, int currentLap, int totalLaps,
+                       int trackTemp, double totalDegradation);
 
-    int suggestPitLap(const Tire& tire, int trackTemp, int totalLaps, int currentLap);
+    int  suggestPitLap(const Tire& tire, int trackTemp, int totalLaps,
+                       int currentLap, double currentWear);
 
     Tire suggestNextTire(int lapsRemaining, int trackTemp);
-
-    void runFullRaceSimulation(Tire tire, int totalLaps, int trackTemp);
-
     Tire suggestBestTireOption(int trackTemp);
 }
-
 
 #endif
