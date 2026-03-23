@@ -1,4 +1,4 @@
-#include "HelpDisplay.h"
+ï»¿#include "HelpDisplay.h"
 #include <iostream>
 #include <string>
 
@@ -22,7 +22,7 @@ namespace F1Sim {
         std::cout << "  - Get pit stop recommendations\n\n";
         std::cout << "Examples:\n";
         std::cout << "  F1TIRE.exe              # Run with interactive input\n";
-        std::cout << "  F1TIRE.exe 58 35        # 58 laps, 35°C track temperature\n";
+        std::cout << "  F1TIRE.exe 58 35        # 58 laps, 35ï¿½C track temperature\n";
     }
 
     bool isHelpRequested(int argc, char* argv[]) {

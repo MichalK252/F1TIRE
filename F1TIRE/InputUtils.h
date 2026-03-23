@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef INPUTUTILS_H
 #define INPUTUTILS_H
 
