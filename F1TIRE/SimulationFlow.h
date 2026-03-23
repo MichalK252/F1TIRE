@@ -1,6 +1,7 @@
-#pragma once
+﻿#pragma once
 #include "TireMenu.h"
+#include "Simulation.h"
 
 namespace F1Sim {
-    void runSimulationLoop(Tire& tire, int trackTemp, int totalLaps);
+    SimulationResult runSimulationLoop(Tire& tire, int trackTemp, int totalLaps, double baseLapTime);
 }
