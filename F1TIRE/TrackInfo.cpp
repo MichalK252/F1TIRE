@@ -1,79 +1,74 @@
+ï»¿#include "TrackInfo.h"
 #include <iostream>
-#include <string>
 #include <map>
-#include "TrackInfo.h"
+#include <string>
+#include <limits>
+
+using namespace std;
 
 namespace F1Sim {
-    int getTrackTemperatureWithUserTemp(const std::string& raceName) {
-        static const std::map<std::string, int> raceTemperature = {
-            {"F1 Australian GP", 26},
-            {"F1 Chinese GP", 22},
-            {"F1 Japanese GP", 19},
-            {"F1 Bahrain GP", 34},
-            {"F1 Saudi Arabian GP", 32},
-            {"F1 Miami GP", 33},
-            {"F1 Emilia-Romagna GP", 25},
-            {"F1 Monaco GP", 30},
-            {"F1 Spain GP", 31},
-            {"F1 Canada GP", 24},
-            {"F1 Austria GP", 23},
-            {"F1 Great Britain", 20},
-            {"F1 Belgium GP", 18},
-            {"F1 Hungary GP", 29},
-            {"F1 Netherlands GP", 21},
-            {"F1 Italy GP", 28},
-            {"F1 Azerbaijan GP", 35},
-            {"F1 Singapore GP", 36},
-            {"F1 United States GP", 30},
-            {"F1 Mexico GP", 32},
-            {"F1 Brazil GP", 29},
-            {"F1 Las Vegas GP", 27},
-            {"F1 Qatar GP", 37},
-            {"F1 Abu Dhabi GP", 33}
-        };
 
-        int defaultTemp = 25;
-        auto it = raceTemperature.find(raceName);
-        if (it != raceTemperature.end()) {
-            defaultTemp = it->second;
+    static const map<string, int> TRACK_TEMPERATURES = {
+        { "F1 Australian GP",    35 },
+        { "F1 Chinese GP",       28 },
+        { "F1 Japanese GP",      22 },
+        { "F1 Bahrain GP",       42 },
+        { "F1 Saudi Arabian GP", 40 },
+        { "F1 Miami GP",         45 },
+        { "F1 Emilia-Romagna GP",27 },
+        { "F1 Monaco GP",        30 },
+        { "F1 Spain GP",         38 },
+        { "F1 Canada GP",        25 },
+        { "F1 Austria GP",       26 },
+        { "F1 Great Britain",    24 },
+        { "F1 Belgium GP",       20 },
+        { "F1 Hungary GP",       50 },
+        { "F1 Netherlands GP",   23 },
+        { "F1 Italy GP",         38 },
+        { "F1 Azerbaijan GP",    35 },
+        { "F1 Singapore GP",     55 },
+        { "F1 United States GP", 40 },
+        { "F1 Mexico GP",        30 },
+        { "F1 Brazil GP",        48 },
+        { "F1 Las Vegas GP",     18 },
+        { "F1 Qatar GP",         52 },
+        { "F1 Abu Dhabi GP",     38 },
+    };
+
+    int getTrackTemperatureWithUserTemp(const string& raceName) {
+        int suggestedTemp = 30;
+
+        auto it = TRACK_TEMPERATURES.find(raceName);
+        if (it != TRACK_TEMPERATURES.end()) {
+            suggestedTemp = it->second;
         }
 
-        std::cout << "Track temperature: " << defaultTemp << "°C" << std::endl;
+        cout << "Suggested track surface temp for " << raceName
+             << ": " << suggestedTemp << " C\n";
+        cout << "Enter track temperature (or press Enter to use "
+             << suggestedTemp << " C): ";
 
-        char answer;
-        while (true) {
-            std::cout << "Do you want to change the track temperature? (y/n): ";
-            std::cin >> answer;
+        string line;
+        if (cin.peek() == '\n') cin.ignore();
+        getline(cin, line);
 
-            if (answer == 'y' || answer == 'Y' || answer == 'n' || answer == 'N') {
-                break;
-            }
-            else {
-                std::cout << "Please enter 'y' or 'n'.\n";
-                std::cin.clear();
-                std::cin.ignore(10000, '\n');
-            }
+        if (line.empty()) {
+            cout << "Using: " << suggestedTemp << " C\n";
+            return suggestedTemp;
         }
 
-        if (answer == 'y' || answer == 'Y') {
-            int userTemp;
-            while (true) {
-                std::cout << "Enter a new temperature (10°C - 60°C): ";
-                if (!(std::cin >> userTemp)) {
-                    std::cout << "Invalid input. Please enter a number.\n";
-                    std::cin.clear();
-                    std::cin.ignore(10000, '\n');
-                    continue;
-                }
-                if (userTemp >= 10 && userTemp <= 60) {
-                    return userTemp;
-                }
-                else {
-                    std::cout << "Are you serious? Enter again.\n";
-                }
+        try {
+            int userTemp = stoi(line);
+            if (userTemp < -20 || userTemp > 100) {
+                cout << "Out of range. Using suggested: " << suggestedTemp << " C\n";
+                return suggestedTemp;
             }
+            cout << "Using: " << userTemp << " C\n";
+            return userTemp;
+        } catch (...) {
+            cout << "Invalid. Using suggested: " << suggestedTemp << " C\n";
+            return suggestedTemp;
         }
-        return defaultTemp;
     }
+
 }
- 
